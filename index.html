@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Проблемные билеты ДЭСД — Казахстан</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#11243a;--text:#edf5ff;--muted:#8fa8c2;--line:#213a55;--red:#ff4058;--yellow:#ffc247;--green:#36d17c;--blue:#3d9cff}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#132a46 0,#07111f 45%);color:var(--text)}
+header{height:76px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#081522e8;position:sticky;top:0;z-index:10;backdrop-filter:blur(10px)}
+.brand{font-size:21px;font-weight:800}.brand small{display:block;font-size:11px;color:var(--muted);letter-spacing:1.5px;margin-top:4px}.summary{display:flex;gap:10px}.pill{padding:10px 14px;border:1px solid var(--line);background:var(--panel);border-radius:12px;font-weight:700}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}.red{background:var(--red)}.yellow{background:var(--yellow)}.green{background:var(--green)}
+main{max-width:1450px;margin:auto;padding:24px}.layout{display:grid;grid-template-columns:minmax(680px,1.65fr) minmax(330px,.7fr);gap:20px}.card{background:linear-gradient(180deg,#0d1b2df2,#091624f2);border:1px solid var(--line);border-radius:20px;box-shadow:0 18px 50px #0005}.map-card{padding:22px}.title{display:flex;justify-content:space-between;align-items:end;margin-bottom:15px}.title h1{font-size:25px;margin:0}.title p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.map{height:650px;position:relative;border-radius:17px;overflow:hidden;background:linear-gradient(180deg,#0c2034,#081725);border:1px solid #1c3854}.map:before{content:"";position:absolute;inset:8% 4%;background:#173553;border:2px solid #2c5d83;clip-path:polygon(4% 39%,12% 23%,25% 20%,34% 11%,46% 15%,57% 10%,70% 19%,80% 16%,94% 29%,97% 47%,88% 55%,91% 70%,79% 80%,66% 77%,56% 90%,43% 84%,32% 92%,22% 78%,10% 74%,4% 59%);filter:drop-shadow(0 12px 30px #0008)}.map:after{content:"КАЗАХСТАН";position:absolute;left:40%;top:47%;font-weight:900;font-size:40px;letter-spacing:7px;color:#ffffff0e;transform:rotate(-4deg)}
+.city{position:absolute;transform:translate(-50%,-50%);z-index:2;cursor:pointer;text-align:center;transition:.18s}.city:hover{transform:translate(-50%,-50%) scale(1.12)}.pin{width:13px;height:13px;background:#b9d9f3;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 6px #3d9cff22;margin:auto}.name{margin-top:6px;font-size:12px;font-weight:750;white-space:nowrap;text-shadow:0 2px 6px #000}.badge{position:absolute;right:-16px;top:-15px;min-width:25px;height:25px;padding:0 7px;border-radius:13px;background:var(--red);display:grid;place-items:center;font-size:12px;font-weight:900;border:2px solid #081725;box-shadow:0 4px 12px #ff405877}.badge.zero{background:#39516a;color:#b9cadb;box-shadow:none}
+.side{padding:20px;min-height:650px}.side h2{margin:0 0 5px}.side .sub{color:var(--muted);font-size:13px;margin-bottom:18px}.unit{padding:15px;margin:10px 0;background:var(--panel2);border:1px solid var(--line);border-radius:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}.unit:hover{border-color:#3d9cff}.count{background:#ff405822;color:#ff7b8c;padding:6px 9px;border-radius:9px;font-weight:800}.count.ok{background:#36d17c20;color:#62e59b}.tickets{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}.ticket{padding:14px;border:1px solid var(--line);border-radius:13px;margin:10px 0;background:#091827}.ticket-top{display:flex;justify-content:space-between;gap:10px;font-weight:800}.status{font-size:11px;padding:5px 7px;border-radius:7px;background:#ff405822;color:#ff7789}.ticket p{font-size:12px;color:#b8c9d9;margin:8px 0 0;line-height:1.5}.hint{padding:12px;border:1px dashed #31516f;border-radius:12px;color:#9db2c7;font-size:12px;line-height:1.55}.back{display:none;border:0;background:#17304a;color:#dcecff;padding:8px 11px;border-radius:9px;cursor:pointer;margin-bottom:12px}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.map{height:540px}.summary{display:none}}@media(max-width:650px){main{padding:10px}.map{height:480px}.brand{font-size:16px}.map:after{font-size:24px}.name{font-size:10px}}
+</style>
+</head>
+<body>
+<header><div class="brand">ПРОБЛЕМНЫЕ БИЛЕТЫ ДЭСД<small>ЕДИНЫЙ МОНИТОРИНГ ПО КАЗАХСТАНУ</small></div><div class="summary"><div class="pill"><span class="dot red"></span>Открыто: <b id="openTotal">0</b></div><div class="pill"><span class="dot yellow"></span>В работе: 4</div><div class="pill"><span class="dot green"></span>Закрыто сегодня: 9</div></div></header>
+<main><div class="layout"><section class="card map-card"><div class="title"><div><h1>Карта Казахстана</h1><p>Нажмите на город, чтобы открыть ДЭСД и подразделения</p></div><div style="color:#8fa8c2;font-size:12px">ДЕМО-МАКЕТ</div></div><div class="map" id="map"></div></section><aside class="card side" id="side"><h2>Все ДЭСД</h2><div class="sub">Красная цифра — количество открытых билетов</div><div class="hint">Выберите город на карте. Справа появятся подразделения <b>ЦТО МС</b>, <b>ЦЭиК</b> и <b>ЦТПСР</b>, а затем проблемные билеты.</div></aside></div></main>
+<script>
+const regions=[
+{name:'Кокшетау',desd:'Акмолинский ДЭСД',x:48,y:22,n:1},
+{name:'Актобе',desd:'Актюбинский ДЭСД',x:27,y:42,n:3},
+{name:'Атырау',desd:'Атырауский ДЭСД',x:13,y:55,n:2},
+{name:'Усть-Каменогорск',desd:'Восточно-Казахстанский ДЭСД',x:83,y:35,n:1},
+{name:'Алматы',desd:'ДЭСД Алматы',x:72,y:75,n:4},
+{name:'Астана',desd:'ДЭСД Астана',x:54,y:28,n:2},
+{name:'Талдыкорган',desd:'ДЭСД Жетісу',x:77,y:67,n:1},
+{name:'Тараз',desd:'Жамбылский ДЭСД',x:60,y:77,n:0},
+{name:'Уральск',desd:'Западно-Казахстанский ДЭСД',x:16,y:38,n:1},
+{name:'Караганда',desd:'Карагандинский ДЭСД',x:57,y:43,n:2},
+{name:'Костанай',desd:'Костанайский ДЭСД',x:39,y:20,n:1},
+{name:'Кызылорда',desd:'Кызылординский ДЭСД',x:43,y:67,n:2},
+{name:'Актау',desd:'Мангистауский ДЭСД',x:13,y:72,n:3},
+{name:'Павлодар',desd:'Павлодарский ДЭСД',x:68,y:26,n:1},
+{name:'Петропавловск',desd:'Северо-Казахстанский ДЭСД',x:49,y:13,n:0}
+];
+const unitData={
+'Актюбинский ДЭСД':{'ЦТО МС':2,'ЦЭиК':1,'ЦТПСР':0},
+'Мангистауский ДЭСД':{'ЦТО МС':1,'ЦЭиК':0,'ЦТПСР':2}
+};
+const demoTickets={
+'Актюбинский ДЭСД|ЦТО МС':[
+{id:101,num:'784521',addr:'мкр. Батыс-2, дом 15',desc:'Нет связи на объекте'},
+{id:102,num:'784538',addr:'пр. Абилкайыр хана, 62',desc:'Повреждение оптического кабеля'}],
+'Актюбинский ДЭСД|ЦЭиК':[{id:103,num:'784560',addr:'АТС-54',desc:'Аварийный сигнал оборудования'}]
+};
+const map=document.getElementById('map');
+regions.forEach((r,i)=>{const el=document.createElement('div');el.className='city';el.style.left=r.x+'%';el.style.top=r.y+'%';el.innerHTML=`<div class="pin"></div><div class="name">${r.name}</div><div class="badge ${r.n===0?'zero':''}">${r.n}</div>`;el.onclick=()=>showRegion(r);map.appendChild(el)});
+document.getElementById('openTotal').textContent=regions.reduce((a,b)=>a+b.n,0);
+function showRegion(r){const side=document.getElementById('side');const d=unitData[r.desd]||splitCount(r.n);side.innerHTML=`<button class="back" style="display:block" onclick="resetSide()">← Все ДЭСД</button><h2>${r.name}</h2><div class="sub">${r.desd} · <span style="color:#ff7789">🔴 ${r.n} открытых</span></div>${Object.entries(d).map(([u,n])=>`<div class="unit" onclick="showUnit('${esc(r.desd)}','${u}',${n},'${r.name}')"><span><b>${icon(u)} ${u}</b><br><small style="color:#8fa8c2">Открыть билеты подразделения</small></span><span class="count ${n===0?'ok':''}">${n===0?'✓ 0':'🔴 '+n}</span></div>`).join('')}<div id="tickets"></div>`}
+function splitCount(n){return {'ЦТО МС':Math.ceil(n/3),'ЦЭиК':Math.floor(n/3),'ЦТПСР':n-Math.ceil(n/3)-Math.floor(n/3)}}
+function showUnit(desd,u,n,city){const box=document.getElementById('tickets');const arr=demoTickets[desd+'|'+u]||Array.from({length:n},(_,i)=>({id:200+i,num:'DEMO-'+(i+1),addr:city+', объект '+(i+1),desc:'Демонстрационный проблемный билет'}));box.innerHTML=`<div class="tickets"><h3>${icon(u)} ${u}</h3>${arr.length?arr.map(t=>`<div class="ticket"><div class="ticket-top"><span>🎫 №${t.num}</span><span class="status">🔴 ОТКРЫТ</span></div><p>📍 ${t.addr}<br>📝 ${t.desc}<br>🆔 ID: ${t.id}</p></div>`).join(''):'<div class="hint">🟢 Открытых билетов нет.</div>'}</div>`;box.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function resetSide(){document.getElementById('side').innerHTML=`<h2>Все ДЭСД</h2><div class="sub">Красная цифра — количество открытых билетов</div><div class="hint">Выберите город на карте. Справа появятся подразделения <b>ЦТО МС</b>, <b>ЦЭиК</b> и <b>ЦТПСР</b>, а затем проблемные билеты.</div>`}
+function icon(u){return u==='ЦТО МС'?'🔧':u==='ЦЭиК'?'⚡':'📡'}
+function esc(s){return s.replace(/'/g,"\\'")}
+</script>
+</body></html>
