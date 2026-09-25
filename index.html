@@ -25,6 +25,19 @@ main{padding:18px 22px;max-width:1600px;margin:0 auto} .content{display:grid;gri
 .modal{display:none;position:fixed;inset:0;background:#000b;z-index:50;align-items:center;justify-content:center} .modal.show{display:flex} .box{width:min(390px,92vw);padding:20px;background:#091b2e;border:1px solid var(--line);border-radius:15px}
 input{width:100%;padding:11px;margin:10px 0;background:#04101e;color:white;border:1px solid var(--line);border-radius:8px}
 @media(max-width:1100px){.shell{grid-template-columns:1fr}nav{display:none}.content{grid-template-columns:1fr}} @media(max-width:650px){header{padding:0 12px}.top .pill{display:none}main{padding:8px}.kpis{grid-template-columns:1fr 1fr}}
+
+.ticket-photo{
+  width:100%;
+  max-height:260px;
+  object-fit:cover;
+  border-radius:12px;
+  margin:8px 0 10px;
+  border:1px solid rgba(255,255,255,.12);
+  cursor:pointer;
+  display:block;
+}
+.photo-link{display:inline-block;margin:0 0 10px;font-size:12px;opacity:.85}
+
 </style>
 <style>
 .dev-on{border-color:#f59e0b!important;box-shadow:0 0 0 1px rgba(245,158,11,.25) inset}
@@ -188,13 +201,24 @@ function renderSide(){
   document.getElementById("side").innerHTML=h;
 }
 
+
+function photoHtml(t){
+  const url=String(t.photo||"").trim();
+  if(!url || !/^https?:\/\//i.test(url))return "";
+  const safe=esc(url);
+  return `<a href="${safe}" target="_blank" rel="noopener">
+    <img class="ticket-photo" src="${safe}" alt="Фото вопроса №${esc(t.id)}" loading="lazy"
+      onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='inline-block'">
+  </a><a class="photo-link" href="${safe}" target="_blank" rel="noopener" style="display:none">📷 Открыть фото</a>`;
+}
+
 function ticketHtml(t){
   const st=t.status==="IN_PROGRESS"?"🟡 В работе":"🔴 Открыт";
-  return `<div class="ticket"><b>🎫 Вопрос ${esc(t.num)}</b><p><b>${st}</b><br>📝 ${esc(t.desc)}<br>👤 ${esc(t.author)}<br>🕐 ${esc(t.created)}</p><button class="close" onclick="askClose(${t.id})">🟢 Закрыть</button></div>`;
+  return `<div class="ticket"><b>🎫 Вопрос ${esc(t.num)}</b><p><b>${st}</b><br>📝 ${esc(t.desc)}<br>👤 ${esc(t.author)}<br>🕐 ${esc(t.created)}</p>${photoHtml(t)}<button class="close" onclick="askClose(${t.id})">🟢 Закрыть</button></div>`;
 }
 
 function historyHtml(t){
-  return `<div class="ticket ${developerMode?'dev-on':''}"><b>🟢 Вопрос ${esc(t.num)}</b><p>${esc(t.unit)}<br>📝 ${esc(t.desc)}<br>👤 ${esc(t.author)}<br>🕐 Закрыт: ${esc(t.closed_at||"—")}<br>👤 Закрыл: ${esc(t.closed_by||"—")}</p>${developerMode?`<button class="deleteForever" onclick="deleteForever(${t.id})">🗑 Удалить навсегда</button>`:""}</div>`;
+  return `<div class="ticket ${developerMode?'dev-on':''}"><b>🟢 Вопрос ${esc(t.num)}</b><p>${esc(t.unit)}<br>📝 ${esc(t.desc)}<br>👤 ${esc(t.author)}<br>🕐 Закрыт: ${esc(t.closed_at||"—")}<br>👤 Закрыл: ${esc(t.closed_by||"—")}</p>${photoHtml(t)}${developerMode?`<button class="deleteForever" onclick="deleteForever(${t.id})">🗑 Удалить навсегда</button>`:""}</div>`;
 }
 
 function askClose(id){
