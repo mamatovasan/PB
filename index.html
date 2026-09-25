@@ -78,8 +78,6 @@ input{width:100%;padding:11px;margin:10px 0;background:#04101e;color:white;borde
 <aside class="card side"><div id="side"><h2>Карта Казахстана</h2><p class="muted">Нажмите на город на карте. Справа откроются подразделения ЦТО МС, ЦЭиК и ЦТПСР.</p></div></aside></div>
 <div class="kpis"><div class="kpi"><strong id="allK">0</strong>Всего вопросов</div><div class="kpi"><strong id="workK">0</strong>В работе</div><div class="kpi"><strong id="openK">0</strong>Ожидают</div><div class="kpi"><strong id="closedK">0</strong>Закрыто</div></div>
 </main></div>
-<div class="modal" id="modal"><div class="box"><h3>🔐 Закрытие билета</h3><div class="muted">Введите код администратора</div><input type="password" id="code" placeholder="Код администратора"><div style="text-align:right"><button onclick="hideModal()">Отмена</button> <button onclick="confirmClose()">Закрыть</button></div></div></div>
-
 <div class="modal" id="devModal"><div class="box">
   <h3>🔧 Режим разработчика</h3>
   <div class="muted">Введите код разработчика</div>
@@ -89,7 +87,6 @@ input{width:100%;padding:11px;margin:10px 0;background:#04101e;color:white;borde
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycby3EFI3oDcZ2ytqB4i73ipsCJFvH19xundiTXwa3YRrR2Om5azRYpMuKtDUDaOYnqYI/exec";
-const ADMIN_CODE = "2580";
 const DEV_CODE = "2580";
 
 const cities=[
@@ -221,26 +218,19 @@ function historyHtml(t){
   return `<div class="ticket ${developerMode?'dev-on':''}"><b>🟢 Вопрос ${esc(t.num)}</b><p>${esc(t.unit)}<br>📝 ${esc(t.desc)}<br>👤 ${esc(t.author)}<br>🕐 Закрыт: ${esc(t.closed_at||"—")}<br>👤 Закрыл: ${esc(t.closed_by||"—")}</p>${photoHtml(t)}${developerMode?`<button class="deleteForever" onclick="deleteForever(${t.id})">🗑 Удалить навсегда</button>`:""}</div>`;
 }
 
-function askClose(id){
-  closing=id;
-  document.getElementById("code").value="";
-  document.getElementById("modal").classList.add("show");
-}
-function hideModal(){
-  document.getElementById("modal").classList.remove("show");
-  closing=null;
-}
-
-async function confirmClose(){
-  if(document.getElementById("code").value!==ADMIN_CODE){alert("Неверный код администратора");return}
-  const id=closing;
-  hideModal();
+async function askClose(id){
   try{
-    const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"update_status",id,status:"CLOSED",user:"Сайт"})});
+    const r=await fetch(API_URL,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify({action:"update_status",id,status:"CLOSED",user:"Сайт"})
+    });
     const data=await r.json();
     if(!data.ok)throw new Error(data.message||data.error||"Ошибка");
     await loadQuestions();
-  }catch(e){alert("Не удалось закрыть вопрос: "+e.message)}
+  }catch(e){
+    alert("Не удалось закрыть вопрос: "+e.message);
+  }
 }
 
 function openDevLogin(){
