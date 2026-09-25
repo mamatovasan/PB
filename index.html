@@ -247,6 +247,49 @@ function enterDevMode(){
 }
 function exitDevMode(){developerMode=false;if(selected)renderSide()}
 
+
+async function deleteAllClosed(){
+  if(!developerMode)return;
+
+  const items=[...closed];
+  if(!items.length){
+    alert("Закрытых вопросов нет.");
+    return;
+  }
+
+  if(!confirm(`Удалить ВСЕ закрытые вопросы (${items.length}) НАВСЕГДА?\n\nБудут удалены закрытые вопросы из Google Таблицы. Если сервер поддерживает удаление связанных файлов Google Drive, они также будут удалены.`))return;
+
+  let deleted=0;
+  let failed=0;
+
+  for(const t of items){
+    try{
+      const r=await fetch(API_URL,{
+        method:"POST",
+        headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body:JSON.stringify({
+          action:"delete_question",
+          id:t.id,
+          dev_code:DEV_CODE
+        })
+      });
+      const data=await r.json();
+      if(data.ok) deleted++;
+      else failed++;
+    }catch(e){
+      failed++;
+    }
+  }
+
+  await loadQuestions();
+
+  if(failed===0){
+    alert(`Удалено закрытых вопросов: ${deleted}`);
+  }else{
+    alert(`Удалено: ${deleted}\nНе удалось удалить: ${failed}`);
+  }
+}
+
 async function deleteForever(id){
   if(!developerMode)return;
   const t=closed.find(x=>x.id===id);
@@ -263,6 +306,23 @@ async function deleteForever(id){
   }
 }
 
+
+function syncDeleteClosedButton(){
+  let btn=document.getElementById("deleteAllClosedBtn");
+  if(developerMode){
+    if(!btn){
+      btn=document.createElement("button");
+      btn.id="deleteAllClosedBtn";
+      btn.textContent="🗑 Удалить все закрытые";
+      btn.onclick=deleteAllClosed;
+      const top=document.querySelector(".top");
+      if(top)top.appendChild(btn);
+    }
+  }else if(btn){
+    btn.remove();
+  }
+}
+
 function updateMapBadges(){
   document.querySelectorAll(".desd-marker").forEach(el=>{
     const desd=el.dataset.desd;
@@ -273,6 +333,7 @@ function updateMapBadges(){
   });
 }
 function stats(){
+  syncDeleteClosedButton();
   const all=[...tickets,...closed];
   updateMapBadges();
   const a=document.getElementById("activeTop"); if(a)a.textContent=tickets.length;
