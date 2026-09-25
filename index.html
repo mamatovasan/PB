@@ -34,6 +34,26 @@ input{width:100%;padding:11px;margin:10px 0;background:#04101e;color:white;borde
 .syncmsg{font-size:12px;color:#93a4b8;margin-top:8px}
 </style>
 
+
+<style>
+.desd-marker{
+  position:absolute; transform:translate(-50%,-50%); z-index:12;
+  display:flex; align-items:center; gap:5px; cursor:pointer;
+  background:#f8fafc; color:#07111f; border:1px solid #dbe5ee;
+  border-radius:6px; padding:4px 6px; font-size:10px; font-weight:900;
+  white-space:nowrap; box-shadow:0 2px 8px #0008;
+}
+.desd-marker:hover{outline:2px solid #36c5ff; z-index:20}
+.live-badge{
+  display:none; min-width:20px; height:20px; padding:0 5px;
+  align-items:center; justify-content:center; border-radius:999px;
+  background:#f01622; color:#fff; border:2px solid #fff;
+  font-size:11px; font-weight:900; line-height:1;
+  box-shadow:0 2px 7px #0008;
+}
+.live-badge.show{display:inline-flex}
+</style>
+
 </head>
 <body>
 <header><div class="brand">ОТКРЫТЫЕ ВОПРОСЫ ДЭСД<small>КАРТА КАЗАХСТАНА • МОНИТОРИНГ</small></div><div class="top"><div class="pill">🔴 Активно: <b id="activeTop">0</b></div><button onclick="exportExcel()">⬇ Excel</button><button onclick="openDevLogin()">🔧 Разработчик</button></div></header>
@@ -56,7 +76,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycby3EFI3oDcZ2ytqB4i73ips
 const ADMIN_CODE = "2580";
 const DEV_CODE = "2580";
 
-const cities=[{"name":"Уральск","desd":"Западно-Казахстанский ДЭСД","x":12,"y":34},{"name":"Атырау","desd":"Атырауский ДЭСД","x":10,"y":55},{"name":"Актау","desd":"Мангистауский ДЭСД","x":15,"y":79},{"name":"Актобе","desd":"Актюбинский ДЭСД","x":31,"y":45},{"name":"Костанай","desd":"Костанайский ДЭСД","x":45,"y":21},{"name":"Кокшетау","desd":"Акмолинский ДЭСД","x":59,"y":22},{"name":"Астана","desd":"ДЭСД Астана","x":60,"y":34},{"name":"Павлодар","desd":"Павлодарский ДЭСД","x":76,"y":24},{"name":"Семей","desd":"Восточно-Казахстанский ДЭСД","x":83,"y":43},{"name":"Өскемен","desd":"Восточно-Казахстанский ДЭСД","x":92,"y":49},{"name":"Караганда","desd":"Карагандинский ДЭСД","x":63,"y":47},{"name":"Кызылорда","desd":"Кызылординский ДЭСД","x":45,"y":70},{"name":"Тараз","desd":"Жамбылский ДЭСД","x":63,"y":77},{"name":"Талдыкорган","desd":"ДЭСД Жетісу","x":78,"y":68},{"name":"Алматы","desd":"ДЭСД Алматы","x":78,"y":79},{"name":"Петропавловск","desd":"Северо-Казахстанский ДЭСД","x":54,"y":12}];
+const cities=[
+{"name":"Западно-Казахстанский ДЭСД","desd":"Западно-Казахстанский ДЭСД","x":12,"y":34},
+{"name":"Атырауский ДЭСД","desd":"Атырауский ДЭСД","x":10,"y":55},
+{"name":"Мангистауский ДЭСД","desd":"Мангистауский ДЭСД","x":15,"y":79},
+{"name":"Актюбинский ДЭСД","desd":"Актюбинский ДЭСД","x":31,"y":45},
+{"name":"Костанайский ДЭСД","desd":"Костанайский ДЭСД","x":45,"y":21},
+{"name":"Акмолинский ДЭСД","desd":"Акмолинский ДЭСД","x":59,"y":22},
+{"name":"ДЭСД Астана","desd":"ДЭСД Астана","x":60,"y":34},
+{"name":"Павлодарский ДЭСД","desd":"Павлодарский ДЭСД","x":76,"y":24},
+{"name":"Восточно-Казахстанский ДЭСД","desd":"Восточно-Казахстанский ДЭСД","x":88,"y":46},
+{"name":"Карагандинский ДЭСД","desd":"Карагандинский ДЭСД","x":63,"y":47},
+{"name":"Кызылординский ДЭСД","desd":"Кызылординский ДЭСД","x":45,"y":70},
+{"name":"Жамбылский ДЭСД","desd":"Жамбылский ДЭСД","x":63,"y":77},
+{"name":"ДЭСД Жетісу","desd":"ДЭСД Жетісу","x":78,"y":68},
+{"name":"ДЭСД Алматы","desd":"ДЭСД Алматы","x":78,"y":79},
+{"name":"Северо-Казахстанский ДЭСД","desd":"Северо-Казахстанский ДЭСД","x":54,"y":12}
+];
 
 let tickets=[];
 let closed=[];
@@ -66,11 +102,13 @@ let developerMode=false;
 
 const map=document.getElementById("map");
 cities.forEach(c=>{
-  const b=document.createElement("button");
-  b.className="hot";
+  const b=document.createElement("div");
+  b.className="desd-marker";
+  b.dataset.desd=c.desd;
   b.title=c.name;
   b.style.left=c.x+"%";
   b.style.top=c.y+"%";
+  b.innerHTML=`<span>${esc(c.name)}</span><span class="live-badge">0</span>`;
   b.onclick=()=>openCity(c);
   map.appendChild(b);
 });
@@ -205,8 +243,18 @@ async function deleteForever(id){
   }
 }
 
+function updateMapBadges(){
+  document.querySelectorAll(".desd-marker").forEach(el=>{
+    const desd=el.dataset.desd;
+    const n=tickets.filter(t=>t.desd===desd && t.status==="OPEN").length;
+    const badge=el.querySelector(".live-badge");
+    badge.textContent=n;
+    badge.classList.toggle("show",n>0);
+  });
+}
 function stats(){
   const all=[...tickets,...closed];
+  updateMapBadges();
   const a=document.getElementById("activeTop"); if(a)a.textContent=tickets.length;
   const ak=document.getElementById("allK"); if(ak)ak.textContent=all.length;
   const wk=document.getElementById("workK"); if(wk)wk.textContent=tickets.filter(t=>t.status==="IN_PROGRESS").length;
