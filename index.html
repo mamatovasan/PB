@@ -54,6 +54,27 @@ input{width:100%;padding:11px;margin:10px 0;background:#04101e;color:white;borde
 .live-badge.show{display:inline-flex}
 </style>
 
+
+<style>
+.old-city-cover{
+ position:absolute; z-index:9; transform:translate(-50%,-50%);
+ width:78px; height:22px; border-radius:8px;
+ background:#078be2;
+ pointer-events:none;
+}
+.desd-marker{z-index:15!important}
+.live-badge{
+ display:none!important;
+ position:absolute; right:-14px; top:-12px;
+ min-width:23px!important; height:23px!important; padding:0 6px!important;
+ background:#ff101f!important; color:#fff!important;
+ border:2px solid #fff!important; border-radius:999px!important;
+ font-size:12px!important; font-weight:900!important;
+ box-shadow:0 2px 8px #000!important;
+}
+.live-badge.show{display:inline-flex!important}
+</style>
+
 </head>
 <body>
 <header><div class="brand">ОТКРЫТЫЕ ВОПРОСЫ ДЭСД<small>КАРТА КАЗАХСТАНА • МОНИТОРИНГ</small></div><div class="top"><div class="pill">🔴 Активно: <b id="activeTop">0</b></div><button onclick="exportExcel()">⬇ Excel</button><button onclick="openDevLogin()">🔧 Разработчик</button></div></header>
@@ -101,6 +122,20 @@ let closing=null;
 let developerMode=false;
 
 const map=document.getElementById("map");
+
+const oldCityLabels=[
+{x:12,y:34},{x:10,y:55},{x:15,y:79},{x:31,y:45},{x:45,y:21},
+{x:59,y:22},{x:60,y:34},{x:76,y:24},{x:83,y:43},{x:92,y:49},
+{x:63,y:47},{x:45,y:70},{x:63,y:77},{x:78,y:68},{x:78,y:79},{x:54,y:12},
+{x:50,y:87}
+];
+oldCityLabels.forEach(p=>{
+ const x=document.createElement("div");
+ x.className="old-city-cover";
+ x.style.left=p.x+"%"; x.style.top=p.y+"%";
+ map.appendChild(x);
+});
+
 cities.forEach(c=>{
   const b=document.createElement("div");
   b.className="desd-marker";
@@ -246,7 +281,7 @@ async function deleteForever(id){
 function updateMapBadges(){
   document.querySelectorAll(".desd-marker").forEach(el=>{
     const desd=el.dataset.desd;
-    const n=tickets.filter(t=>t.desd===desd && t.status==="OPEN").length;
+    const n=tickets.filter(t=>t.desd===desd && (t.status==="OPEN" || t.status==="IN_PROGRESS")).length;
     const badge=el.querySelector(".live-badge");
     badge.textContent=n;
     badge.classList.toggle("show",n>0);
