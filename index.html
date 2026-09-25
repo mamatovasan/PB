@@ -194,7 +194,7 @@ function renderSide(){
   });
 
   const hist=closed.filter(t=>t.desd===selected.desd);
-  h+=`<div class="unit"><div class="unithead" onclick="this.parentElement.classList.toggle('open')"><span>🕘 История закрытых</span><span>${hist.length}</span></div><div class="unitbody">${hist.length?hist.map(historyHtml).join(""):'<div class="muted">Закрытых вопросов нет</div>'}</div></div>`;
+  h+=`<div class="unit"><div class="unithead" onclick="this.parentElement.classList.toggle('open')"><span>🕘 История закрытых</span><span>${hist.length}</span>${developerMode ? `<button class="deleteForever" style="width:100%;margin:8px 0 10px" onclick="deleteAllClosed()">🗑 Удалить все закрытые</button>` : ""}</div><div class="unitbody">${hist.length?hist.map(historyHtml).join(""):'<div class="muted">Закрытых вопросов нет</div>'}</div></div>`;
   document.getElementById("side").innerHTML=h;
 }
 
@@ -307,21 +307,7 @@ async function deleteForever(id){
 }
 
 
-function syncDeleteClosedButton(){
-  let btn=document.getElementById("deleteAllClosedBtn");
-  if(developerMode){
-    if(!btn){
-      btn=document.createElement("button");
-      btn.id="deleteAllClosedBtn";
-      btn.textContent="🗑 Удалить все закрытые";
-      btn.onclick=deleteAllClosed;
-      const top=document.querySelector(".top");
-      if(top)top.appendChild(btn);
-    }
-  }else if(btn){
-    btn.remove();
-  }
-}
+function syncDeleteClosedButton(){}
 
 function updateMapBadges(){
   document.querySelectorAll(".desd-marker").forEach(el=>{
